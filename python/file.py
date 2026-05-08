@@ -30,9 +30,6 @@ def read():
 wlock = asyncio.Lock()
 async def write():
   async with wlock:
-    # global DATA
-    # DATA.color = color
-
     with open(FILE_NAME, 'w') as f:
       json.dump(DATA.__dict__, f)
     

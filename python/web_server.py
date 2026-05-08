@@ -1,11 +1,8 @@
 #### WEB Example
-import asyncio
 import network
 import file
 import ujson
 import gc
-
-lock = asyncio.Lock()
 
 def connect_wifi(ssid, password):
     wlan = network.WLAN(network.STA_IF)

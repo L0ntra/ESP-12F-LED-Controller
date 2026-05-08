@@ -14,7 +14,6 @@ import file
 
 file.read()
 
-# 3. Main async loop
 async def main():
     web.connect_wifi(file.DATA.ssid, file.DATA.password)
     
