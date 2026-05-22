@@ -12,10 +12,10 @@ constexpr uint8_t PIN_LED_BUILTIN = 2;
 constexpr uint8_t PIN_NEOPIXEL = 14;
 constexpr uint8_t PIN_SWITCH = 4;
 
-Config config;
-LEDController leds;
-WebServer server;
-int current_color[3] = {255, 0, 0};
+static Config config;
+static LEDController leds;
+static WebServer server;
+static int current_color[3] = {255, 0, 0};
 
 static void updateLEDs() {
     int r = current_color[0];
