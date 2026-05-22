@@ -7,6 +7,8 @@ using std::function;
 using std::map;
 using std::pair;
 
+class ESP8266WebServer;
+
 class WebServer {
 public:
     using Handler = function<void()>;
@@ -25,5 +27,5 @@ public:
 
 private:
     map<pair<string, string>, Handler> routes_;
-    void* server_ptr_ = nullptr;
+    ESP8266WebServer* server_ptr_ = nullptr;
 };

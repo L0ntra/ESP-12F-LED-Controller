@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 
+class Adafruit_NeoPixel;
+
 class LEDController {
 public:
     LEDController();
@@ -14,5 +16,5 @@ public:
 private:
     uint8_t color_[3] = {0, 0, 0};
     float brightness_ = 1.0f;
-    void* strip_ = nullptr;
+    Adafruit_NeoPixel* strip_ = nullptr;
 };

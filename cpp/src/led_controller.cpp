@@ -4,15 +4,15 @@
 LEDController::LEDController() {}
 
 LEDController::~LEDController() {
-    delete static_cast<Adafruit_NeoPixel*>(strip_);
+    delete strip_;
 }
 
 void LEDController::begin(uint8_t pin, uint16_t n_leds) {
-    delete static_cast<Adafruit_NeoPixel*>(strip_);
+    delete strip_;
     strip_ = nullptr;
     strip_ = new Adafruit_NeoPixel(n_leds, pin, NEO_GRB + NEO_KHZ800);
-    static_cast<Adafruit_NeoPixel*>(strip_)->begin();
-    static_cast<Adafruit_NeoPixel*>(strip_)->show();
+    strip_->begin();
+    strip_->show();
 }
 
 void LEDController::setColor(uint8_t r, uint8_t g, uint8_t b) {
@@ -29,12 +29,11 @@ void LEDController::setBrightness(float percent) {
 
 void LEDController::show() {
     if (!strip_) return;
-    auto* s = static_cast<Adafruit_NeoPixel*>(strip_);
-    uint32_t c = s->Color(
+    uint32_t c = strip_->Color(
         static_cast<uint8_t>(color_[0] * brightness_),
         static_cast<uint8_t>(color_[1] * brightness_),
         static_cast<uint8_t>(color_[2] * brightness_)
     );
-    s->fill(c);
-    s->show();
+    strip_->fill(c);
+    strip_->show();
 }
