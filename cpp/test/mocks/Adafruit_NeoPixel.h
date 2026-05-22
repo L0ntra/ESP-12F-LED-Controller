@@ -6,10 +6,6 @@
 #define NEO_GRB     0
 #define NEO_KHZ800  0
 
-struct MockPixelState {
-    uint32_t color = 0;
-};
-
 extern uint32_t last_fill_color;
 
 class Adafruit_NeoPixel {

@@ -9,8 +9,7 @@ WebServer::~WebServer() {
     delete static_cast<ESP8266WebServer*>(server_ptr_);
 }
 
-void WebServer::begin(int port) {
-    (void)port;
+void WebServer::begin() {
     static_cast<ESP8266WebServer*>(server_ptr_)->begin();
 }
 
@@ -47,10 +46,4 @@ void WebServer::send(int code, const string& content_type, const string& content
     if (!server_ptr_) return;
     static_cast<ESP8266WebServer*>(server_ptr_)->send(
         code, content_type.c_str(), content.c_str());
-}
-
-void WebServer::close() {
-    if (server_ptr_) {
-        static_cast<ESP8266WebServer*>(server_ptr_)->close();
-    }
 }

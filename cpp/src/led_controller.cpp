@@ -10,7 +10,6 @@ LEDController::~LEDController() {
 void LEDController::begin(uint8_t pin, uint16_t n_leds) {
     delete static_cast<Adafruit_NeoPixel*>(strip_);
     strip_ = nullptr;
-    n_leds_ = n_leds;
     strip_ = new Adafruit_NeoPixel(n_leds, pin, NEO_GRB + NEO_KHZ800);
     static_cast<Adafruit_NeoPixel*>(strip_)->begin();
     static_cast<Adafruit_NeoPixel*>(strip_)->show();

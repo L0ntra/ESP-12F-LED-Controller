@@ -65,7 +65,7 @@ TEST(WebServer, wrapper_WebServer_class) {
     WebServer ws;
     bool called = false;
 
-    ws.begin(80);
+    ws.begin();
     ws.on("GET", "/hello", [&]() { called = true; });
     ASSERT_TRUE(true);
 }

@@ -14,14 +14,6 @@ typedef uint8_t byte;
 #define INPUT_PULLUP   0x2
 #define LOW            0
 #define HIGH           1
-#define CHANGE         2
-#define FALLING        3
-#define RISING         4
-
-#define LSBFIRST 0
-#define MSBFIRST 1
-
-enum PinStatus : uint8_t {};
 
 struct _mock_pin_state {
     uint8_t mode = INPUT;
@@ -77,7 +69,6 @@ public:
 
 extern Serial_ Serial;
 
-class __FlashStringHelper;
 #define F(string_literal) (string_literal)
 #define PROGMEM
 #define pgm_read_byte(addr) (*(const unsigned char*)(addr))

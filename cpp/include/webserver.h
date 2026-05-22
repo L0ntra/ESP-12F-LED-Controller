@@ -14,10 +14,9 @@ public:
     WebServer(int port = 80);
     ~WebServer();
 
-    void begin(int port = 80);
+    void begin();
     void on(const string& method, const string& path, Handler handler);
     void handleClient();
-    void close();
 
     string path() const;
     string method() const;
