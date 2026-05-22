@@ -7,6 +7,8 @@ using std::unique_ptr;
 
 static const char* CONFIG_PATH = "/config.json";
 
+// load reads the config file from LittleFS and populates the fields.
+// Returns false if the filesystem, file, or JSON is unreadable.
 bool Config::load() {
     if (!LittleFS.begin()) return false;
     File f = LittleFS.open(CONFIG_PATH, "r");
@@ -31,6 +33,8 @@ bool Config::load() {
     return true;
 }
 
+// save writes the current config fields to the config file on LittleFS.
+// Returns false if the filesystem or file cannot be opened.
 bool Config::save() {
     if (!LittleFS.begin()) return false;
     JsonDocument doc;

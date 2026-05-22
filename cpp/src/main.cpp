@@ -17,6 +17,8 @@ static LEDController leds;
 static WebServer server;
 static int current_color[3] = {255, 0, 0};
 
+// updateLEDs reads the current color, applies the switch override and
+// potentiometer brightness, then writes the result to the LED strip.
 static void updateLEDs() {
     int r = current_color[0];
     int g = current_color[1];
@@ -35,6 +37,8 @@ static void updateLEDs() {
     leds.show();
 }
 
+// handleHome serves the color-picker HTML page. The current color is
+// embedded into the page so the picker reflects the active value.
 static void handleHome() {
     string hex = rgbToHex(current_color[0], current_color[1], current_color[2]);
     string html =
@@ -60,6 +64,8 @@ static void handleHome() {
     server.send(200, "text/html", html);
 }
 
+// handleSetColor parses the JSON body from a color-picker POST, updates
+// the current color and the persisted config, and sends back an RGB summary.
 static void handleSetColor() {
     string body = server.body();
     if (body.empty()) {
@@ -87,6 +93,8 @@ static void handleSetColor() {
     server.send(200, "text/plain", resp);
 }
 
+// setup initialises the filesystem, loads persisted config, starts the LED
+// controller, initiates an async WiFi connection, and registers HTTP routes.
 void setup() {
     if (!LittleFS.begin()) {
         // LittleFS mount failed — will use defaults
@@ -115,6 +123,7 @@ void setup() {
 
 unsigned long last_led_update = 0;
 
+// loop processes HTTP requests and drives the LED strip at 100 Hz.
 void loop() {
     server.handleClient();
     unsigned long now = millis();
