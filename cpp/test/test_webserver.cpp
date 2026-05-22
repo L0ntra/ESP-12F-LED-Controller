@@ -69,3 +69,10 @@ TEST(WebServer, wrapper_WebServer_class) {
     ws.on("GET", "/hello", [&]() { called = true; });
     ASSERT_TRUE(true);
 }
+
+TEST(WebServer, on_before_begin_does_not_crash) {
+    WebServer ws;
+    ws.on("GET", "/route", []() {});
+    // The fix: constructor allocates ESP8266WebServer immediately,
+    // so on() never dereferences a null server_ptr_
+}
