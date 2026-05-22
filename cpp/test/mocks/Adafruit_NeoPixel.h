@@ -10,12 +10,12 @@ extern uint32_t last_fill_color;
 
 class Adafruit_NeoPixel {
 public:
-    Adafruit_NeoPixel(uint16_t n, uint8_t pin, uint16_t type) {}
+    Adafruit_NeoPixel(uint16_t /*n*/, uint8_t /*pin*/, uint16_t /*type*/) {}
 
     void begin() {}
     void show() {}
 
-    void fill(uint32_t c, uint16_t first = 0, uint16_t count = 0) {
+    void fill(uint32_t c, uint16_t /*first*/ = 0, uint16_t /*count*/ = 0) {
         fill_color_ = c;
         last_fill_color = c;
     }

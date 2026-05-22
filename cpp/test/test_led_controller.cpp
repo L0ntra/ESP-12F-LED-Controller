@@ -23,7 +23,7 @@ TEST(LEDController, brightness_affects_output) {
 
     // If brightness is 0.5, the effective color is (127, 64, 32)
     // 127 = 0x7f, 64 = 0x40, 32 = 0x20 => 0x7f4020
-    ASSERT_EQ(last_fill_color, 0x7f4020);
+    ASSERT_EQ(last_fill_color, 0x7f4020U);
 }
 
 TEST(LEDController, brightness_clamped_to_0) {
