@@ -1,10 +1,16 @@
 #include "webserver.h"
 #include <ESP8266WebServer.h>
 
+WebServer::WebServer(int port) {
+    server_ptr_ = new ESP8266WebServer(port);
+}
+
+WebServer::~WebServer() {
+    delete static_cast<ESP8266WebServer*>(server_ptr_);
+}
+
 void WebServer::begin(int port) {
-    if (!server_ptr_) {
-        server_ptr_ = new ESP8266WebServer(port);
-    }
+    (void)port;
     static_cast<ESP8266WebServer*>(server_ptr_)->begin();
 }
 

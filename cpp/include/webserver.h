@@ -11,6 +11,9 @@ class WebServer {
 public:
     using Handler = function<void()>;
 
+    WebServer(int port = 80);
+    ~WebServer();
+
     void begin(int port = 80);
     void on(const string& method, const string& path, Handler handler);
     void handleClient();

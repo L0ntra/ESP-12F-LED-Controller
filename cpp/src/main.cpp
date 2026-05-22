@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
+#include <LittleFS.h>
 
 #include "config.h"
 #include "led_controller.h"
@@ -92,6 +93,10 @@ static void handleSetColor() {
 void setup() {
     Serial.begin(115200);
     delay(1000);
+
+    if (!LittleFS.begin()) {
+        Serial.println("LittleFS mount failed!");
+    }
 
     pinMode(PIN_LED_BUILTIN, OUTPUT);
     digitalWrite(PIN_LED_BUILTIN, HIGH);

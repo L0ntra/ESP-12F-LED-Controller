@@ -18,17 +18,12 @@ TEST(LEDController, brightness_affects_output) {
 
     leds.setColor(255, 128, 64);
     leds.setBrightness(0.5f);
+    last_fill_color = 0;
     leds.show();
 
     // If brightness is 0.5, the effective color is (127, 64, 32)
-    // Verified by inspecting NeoPixel mock's fill color
-    Adafruit_NeoPixel strip(60, 14, 0);
-    uint32_t c = strip.Color(
-        static_cast<uint8_t>(255 * 0.5f),
-        static_cast<uint8_t>(128 * 0.5f),
-        static_cast<uint8_t>(64 * 0.5f)
-    );
-    ASSERT_EQ(c, 0x7f4020);
+    // 127 = 0x7f, 64 = 0x40, 32 = 0x20 => 0x7f4020
+    ASSERT_EQ(last_fill_color, 0x7f4020);
 }
 
 TEST(LEDController, brightness_clamped_to_0) {

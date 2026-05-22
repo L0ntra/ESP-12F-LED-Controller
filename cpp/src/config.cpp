@@ -32,6 +32,7 @@ bool Config::load() {
 }
 
 bool Config::save() {
+    if (!LittleFS.begin()) return false;
     JsonDocument doc;
     doc["ssid"] = ssid;
     doc["password"] = password;

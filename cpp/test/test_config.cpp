@@ -1,6 +1,6 @@
 #include "framework.h"
 #include "LittleFS.h"
-#include "../src/config.cpp"
+#include "../include/config.h"
 
 TEST(Config, default_values) {
     Config c;

@@ -26,6 +26,9 @@ INCLUDES := \
 # ---------------------------------------------------------------------------
 SRC := \
     $(SRC_DIR)/src/utils.cpp \
+    $(SRC_DIR)/src/config.cpp \
+    $(SRC_DIR)/src/led_controller.cpp \
+    $(SRC_DIR)/src/webserver.cpp \
     $(MOCK_DIR)/Arduino.cpp \
     $(MOCK_DIR)/ESP8266WiFi.cpp \
     $(MOCK_DIR)/ESP8266WebServer.cpp \
