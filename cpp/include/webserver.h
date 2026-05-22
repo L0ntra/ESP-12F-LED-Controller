@@ -2,22 +2,26 @@
 #include <string>
 #include <functional>
 #include <map>
+using std::string;
+using std::function;
+using std::map;
+using std::pair;
 
 class WebServer {
 public:
-    using Handler = std::function<void()>;
+    using Handler = function<void()>;
 
     void begin(int port = 80);
-    void on(const std::string& method, const std::string& path, Handler handler);
+    void on(const string& method, const string& path, Handler handler);
     void handleClient();
     void close();
 
-    std::string path() const;
-    std::string method() const;
-    std::string body() const;
-    void send(int code, const std::string& content_type, const std::string& content);
+    string path() const;
+    string method() const;
+    string body() const;
+    void send(int code, const string& content_type, const string& content);
 
 private:
-    std::map<std::pair<std::string, std::string>, Handler> routes_;
+    map<pair<string, string>, Handler> routes_;
     void* server_ptr_ = nullptr;
 };

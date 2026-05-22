@@ -6,19 +6,27 @@
 #include <vector>
 #include <stdexcept>
 
+using std::string;
+using std::vector;
+using std::function;
+using std::move;
+using std::runtime_error;
+using std::to_string;
+using std::exception;
+
 struct TestCase {
-    std::string name;
-    std::function<void()> fn;
+    string name;
+    function<void()> fn;
 };
 
-inline std::vector<TestCase>& testRegistry() {
-    static std::vector<TestCase> reg;
+inline vector<TestCase>& testRegistry() {
+    static vector<TestCase> reg;
     return reg;
 }
 
 struct TestRegistrar {
-    TestRegistrar(const char* name, std::function<void()> fn) {
-        testRegistry().push_back({name, std::move(fn)});
+    TestRegistrar(const char* name, function<void()> fn) {
+        testRegistry().push_back({name, move(fn)});
     }
 };
 
@@ -31,8 +39,8 @@ struct TestRegistrar {
 #define STRINGIFY(x) #x
 #define ASSERT(cond, msg) do {                                                  \
     if (!(cond)) {                                                              \
-        throw std::runtime_error(                                               \
-            std::string(__FILE__) + ":" + std::to_string(__LINE__) +            \
+        throw runtime_error(                                                    \
+            string(__FILE__) + ":" + to_string(__LINE__) +                      \
             ": ASSERT(" #cond ") failed: " + msg);                              \
     }                                                                           \
 } while(0)
@@ -43,8 +51,8 @@ struct TestRegistrar {
 #define ASSERT_EQ(a, b) do {                                                    \
     auto _a = (a); auto _b = (b);                                              \
     if (_a != _b) {                                                             \
-        throw std::runtime_error(                                               \
-            std::string(__FILE__) + ":" + std::to_string(__LINE__) +            \
+        throw runtime_error(                                                    \
+            string(__FILE__) + ":" + to_string(__LINE__) +                      \
             ": ASSERT_EQ(" #a ", " #b ") failed");                              \
     }                                                                           \
 } while(0)
@@ -52,17 +60,17 @@ struct TestRegistrar {
 #define ASSERT_NEAR(a, b, eps) do {                                             \
     auto _d = ((a) > (b)) ? ((a) - (b)) : ((b) - (a));                         \
     if (_d > (eps)) {                                                           \
-        throw std::runtime_error(                                               \
-            std::string(__FILE__) + ":" + std::to_string(__LINE__) +            \
+        throw runtime_error(                                                    \
+            string(__FILE__) + ":" + to_string(__LINE__) +                      \
             ": ASSERT_NEAR(" #a ", " #b ") failed");                            \
     }                                                                           \
 } while(0)
 
 #define ASSERT_STREQ(a, b) do {                                                 \
-    std::string _a(a); std::string _b(b);                                      \
+    string _a(a); string _b(b);                                                \
     if (_a != _b) {                                                             \
-        throw std::runtime_error(                                               \
-            std::string(__FILE__) + ":" + std::to_string(__LINE__) +            \
+        throw runtime_error(                                                    \
+            string(__FILE__) + ":" + to_string(__LINE__) +                      \
             ": ASSERT_STREQ(" #a ", " #b ") failed: \"" + _a + "\" != \"" + _b + "\""); \
     }                                                                           \
 } while(0)
@@ -76,7 +84,7 @@ inline int runAllTests() {
             t.fn();
             printf("OK\n");
             passed++;
-        } catch (const std::exception& e) {
+        } catch (const exception& e) {
             printf("FAIL\n    %s\n", e.what());
             failed++;
         } catch (...) {
@@ -84,7 +92,6 @@ inline int runAllTests() {
             failed++;
         }
     }
-    printf("\n%d passed, %d failed out of %zu\n", passed, failed,
-           testRegistry().size());
+    printf("\n%d passed, %d failed out of %zu\n", passed, failed, testRegistry().size());
     return failed;
 }

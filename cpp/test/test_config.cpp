@@ -67,9 +67,9 @@ TEST(Config, save_writes_valid_json) {
 
     c.save();
 
-    std::string json = LittleFS.fileContent("/config.json");
-    ASSERT_TRUE(json.find("\"ssid\":\"Test\"") != std::string::npos);
-    ASSERT_TRUE(json.find("\"password\":\"pw\"") != std::string::npos);
-    ASSERT_TRUE(json.find("\"color\":[1,2,3]") != std::string::npos);
-    ASSERT_TRUE(json.find("\"n_leds\":10") != std::string::npos);
+    string json = LittleFS.fileContent("/config.json");
+    ASSERT_TRUE(json.find("\"ssid\":\"Test\"") != string::npos);
+    ASSERT_TRUE(json.find("\"password\":\"pw\"") != string::npos);
+    ASSERT_TRUE(json.find("\"color\":[1,2,3]") != string::npos);
+    ASSERT_TRUE(json.find("\"n_leds\":10") != string::npos);
 }

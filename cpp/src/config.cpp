@@ -3,6 +3,7 @@
 #include <memory>
 #include <LittleFS.h>
 #include <ArduinoJson.h>
+using std::unique_ptr;
 
 static const char* CONFIG_PATH = "/config.json";
 
@@ -12,7 +13,7 @@ bool Config::load() {
     if (!f) return false;
 
     size_t sz = f.size();
-    auto buf = std::unique_ptr<char[]>(new char[sz + 1]);
+    auto buf = unique_ptr<char[]>(new char[sz + 1]);
     f.readBytes(buf.get(), sz);
     buf[sz] = '\0';
     f.close();

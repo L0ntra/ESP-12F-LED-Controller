@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
+using std::string;
 
 struct Config {
-    std::string ssid;
-    std::string password;
+    string ssid;
+    string password;
     int color[3] = {255, 0, 0};
     int n_leds = 0;
 

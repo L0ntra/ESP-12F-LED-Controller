@@ -2,20 +2,22 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+using std::snprintf;
+using std::stoi;
 
-std::string rgbToHex(int r, int g, int b) {
+string rgbToHex(int r, int g, int b) {
     char buf[8];
-    std::snprintf(buf, sizeof(buf), "#%02x%02x%02x", r, g, b);
+    snprintf(buf, sizeof(buf), "#%02x%02x%02x", r, g, b);
     return buf;
 }
 
-void hexToRgb(const std::string& hex, int& r, int& g, int& b) {
-    std::string h = hex;
+void hexToRgb(const string& hex, int& r, int& g, int& b) {
+    string h = hex;
     if (!h.empty() && h[0] == '#') h = h.substr(1);
     if (h.size() >= 6) {
-        r = std::stoi(h.substr(0, 2), nullptr, 16);
-        g = std::stoi(h.substr(2, 2), nullptr, 16);
-        b = std::stoi(h.substr(4, 2), nullptr, 16);
+        r = stoi(h.substr(0, 2), nullptr, 16);
+        g = stoi(h.substr(2, 2), nullptr, 16);
+        b = stoi(h.substr(4, 2), nullptr, 16);
     }
 }
 

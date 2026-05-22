@@ -38,7 +38,7 @@ TEST(WebServer, registers_and_routes_POST) {
 
 TEST(WebServer, plain_arg_contains_body) {
     ESP8266WebServer mock(80);
-    std::string body;
+    string body;
 
     mock.on("/set-color", HTTP_POST, [&]() {
         body = mock.arg("plain").c_str();

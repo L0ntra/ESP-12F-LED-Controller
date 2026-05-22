@@ -69,7 +69,7 @@ TEST(Utils, hexToRgb_roundtrip) {
         {128, 128, 128}, {12, 34, 56}, {255, 255, 255}
     };
     for (auto& c : expected) {
-        std::string hex = rgbToHex(c[0], c[1], c[2]);
+        string hex = rgbToHex(c[0], c[1], c[2]);
         int r, g, b;
         hexToRgb(hex, r, g, b);
         ASSERT_EQ(r, c[0]);

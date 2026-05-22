@@ -35,8 +35,8 @@ static void updateLEDs() {
 }
 
 static void handleHome() {
-    std::string hex = rgbToHex(current_color[0], current_color[1], current_color[2]);
-    std::string html =
+    string hex = rgbToHex(current_color[0], current_color[1], current_color[2]);
+    string html =
         "<!DOCTYPE html>\n"
         "<html>\n"
         "<head><title>ESP8266 LED Controller</title></head>\n"
@@ -60,7 +60,7 @@ static void handleHome() {
 }
 
 static void handleSetColor() {
-    std::string body = server.body();
+    string body = server.body();
     if (body.empty()) {
         server.send(411, "text/plain", "Length Required");
         return;
@@ -73,7 +73,7 @@ static void handleSetColor() {
         return;
     }
 
-    std::string hex = doc["color"] | "#000000";
+    string hex = doc["color"] | "#000000";
     hexToRgb(hex, current_color[0], current_color[1], current_color[2]);
     config.color[0] = current_color[0];
     config.color[1] = current_color[1];
@@ -81,8 +81,8 @@ static void handleSetColor() {
     config.save();
 
     char resp[64];
-    std::snprintf(resp, sizeof(resp), "RGB: (%d, %d, %d)",
-                  current_color[0], current_color[1], current_color[2]);
+    snprintf(resp, sizeof(resp), "RGB: (%d, %d, %d)",
+             current_color[0], current_color[1], current_color[2]);
     server.send(200, "text/plain", resp);
 
     Serial.printf("Updated color: (%d, %d, %d)\n",
