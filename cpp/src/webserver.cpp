@@ -8,7 +8,7 @@ void WebServer::begin(int port) {
     static_cast<ESP8266WebServer*>(server_ptr_)->begin();
 }
 
-void WebServer::on(const std::string& method, const std::string& path, Handler handler) {
+void WebServer::on(const string& method, const string& path, Handler handler) {
     routes_[{method, path}] = handler;
     HTTPMethod m = (method == "GET") ? HTTP_GET : HTTP_POST;
     static_cast<ESP8266WebServer*>(server_ptr_)->on(
@@ -21,23 +21,23 @@ void WebServer::handleClient() {
     }
 }
 
-std::string WebServer::path() const {
+string WebServer::path() const {
     if (!server_ptr_) return {};
-    return std::string(static_cast<ESP8266WebServer*>(server_ptr_)->uri().c_str());
+    return string(static_cast<ESP8266WebServer*>(server_ptr_)->uri().c_str());
 }
 
-std::string WebServer::method() const {
+string WebServer::method() const {
     if (!server_ptr_) return {};
     auto m = static_cast<ESP8266WebServer*>(server_ptr_)->method();
     return (m == HTTP_GET) ? "GET" : "POST";
 }
 
-std::string WebServer::body() const {
+string WebServer::body() const {
     if (!server_ptr_) return {};
-    return std::string(static_cast<ESP8266WebServer*>(server_ptr_)->arg("plain").c_str());
+    return string(static_cast<ESP8266WebServer*>(server_ptr_)->arg("plain").c_str());
 }
 
-void WebServer::send(int code, const std::string& content_type, const std::string& content) {
+void WebServer::send(int code, const string& content_type, const string& content) {
     if (!server_ptr_) return;
     static_cast<ESP8266WebServer*>(server_ptr_)->send(
         code, content_type.c_str(), content.c_str());

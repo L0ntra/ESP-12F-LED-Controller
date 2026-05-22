@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cstdarg>
 #include <string>
+using std::string;
 
 typedef uint8_t byte;
 
@@ -45,7 +46,7 @@ inline void delay(unsigned long ms) { mock_millis += ms; }
 inline unsigned long millis() { return mock_millis; }
 
 class String {
-    std::string s_;
+    string s_;
 public:
     String() = default;
     String(const char* s) : s_(s ? s : "") {}

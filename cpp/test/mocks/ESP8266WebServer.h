@@ -4,15 +4,19 @@
 #include <string>
 #include <vector>
 #include "Arduino.h"
+using std::string;
+using std::function;
+using std::map;
+using std::vector;
 
 enum HTTPMethod : uint8_t { HTTP_ANY = 0, HTTP_GET = 1, HTTP_POST = 2 };
 
 class ESP8266WebServer {
 public:
-    using Handler = std::function<void()>;
+    using Handler = function<void()>;
 
     struct Route {
-        std::string uri;
+        string uri;
         HTTPMethod method;
         Handler handler;
     };
@@ -44,8 +48,8 @@ public:
     }
 
     int status_code_ = 0;
-    std::string content_type_;
-    std::string response_body_;
+    string content_type_;
+    string response_body_;
 
 private:
     int port_;
@@ -53,6 +57,6 @@ private:
     String current_uri_;
     HTTPMethod current_method_ = HTTP_ANY;
     String request_body_;
-    std::map<std::string, String> args_;
-    std::vector<Route> routes_;
+    map<string, String> args_;
+    vector<Route> routes_;
 };

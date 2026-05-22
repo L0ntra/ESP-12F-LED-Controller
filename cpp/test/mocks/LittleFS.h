@@ -4,14 +4,14 @@
 #include <string>
 #include <map>
 #include <sstream>
+#include <cstring>
 #include "Arduino.h"
-
-// Forward declaration
-class LittleFSClass;
+using std::string;
+using std::map;
 
 class File {
     friend class LittleFSClass;
-    std::string* storage_ = nullptr;
+    string* storage_ = nullptr;
     bool write_mode_ = false;
     size_t read_pos_ = 0;
 
@@ -24,7 +24,7 @@ public:
         if (!storage_) return 0;
         size_t avail = storage_->size() - read_pos_;
         size_t to_read = (len < avail) ? len : avail;
-        std::memcpy(buf, storage_->data() + read_pos_, to_read);
+        memcpy(buf, storage_->data() + read_pos_, to_read);
         read_pos_ += to_read;
         return to_read;
     }
@@ -46,7 +46,7 @@ public:
 };
 
 class LittleFSClass {
-    std::map<std::string, std::string> files_;
+    map<string, string> files_;
 
 public:
     bool begin() { return true; }
@@ -68,7 +68,7 @@ public:
         return f;
     }
 
-    std::string& fileContent(const char* path) { return files_[path]; }
+    string& fileContent(const char* path) { return files_[path]; }
     void clear() { files_.clear(); }
 };
 
