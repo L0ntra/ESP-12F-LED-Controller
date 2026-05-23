@@ -13,13 +13,17 @@ BUILD_DIR    := build
 ARDUINOJSON_DIR := $(BUILD_DIR)/ArduinoJson
 ARDUINOJSON_VERSION := 7.4.3
 
+# Download doctest if not present
+DOCTEST_DIR := $(BUILD_DIR)/doctest
+
 # ---------------------------------------------------------------------------
 # Include paths (mocks come first to shadow ESP8266 headers)
 # ---------------------------------------------------------------------------
 INCLUDES := \
     -I$(MOCK_DIR) \
     -I$(SRC_DIR)/include \
-    -I$(ARDUINOJSON_DIR)/src
+    -I$(ARDUINOJSON_DIR)/src \
+    -I$(DOCTEST_DIR)
 
 # ---------------------------------------------------------------------------
 # Source files
@@ -39,7 +43,7 @@ TEST_SRC := \
     test_config.cpp \
     test_led_controller.cpp \
     test_webserver.cpp \
-    main.cpp
+    doctest_main.cpp
 
 OBJ := $(SRC:%.cpp=$(BUILD_DIR)/%.o) $(TEST_SRC:%.cpp=$(BUILD_DIR)/%.o)
 
@@ -71,6 +75,13 @@ fetch_deps:
 	    curl -sL "https://github.com/bblanchon/ArduinoJson/archive/refs/tags/v$(ARDUINOJSON_VERSION).tar.gz" \
 	        | tar xz -C $(BUILD_DIR); \
 	    mv $(BUILD_DIR)/ArduinoJson-$(ARDUINOJSON_VERSION) $(ARDUINOJSON_DIR); \
+	    echo "==> Done"; \
+	fi
+	@if [ ! -f "$(DOCTEST_DIR)/doctest.h" ]; then \
+	    echo "==> Downloading doctest..."; \
+	    mkdir -p $(DOCTEST_DIR); \
+	    curl -sL "https://raw.githubusercontent.com/doctest/doctest/master/doctest/doctest.h" \
+	        -o $(DOCTEST_DIR)/doctest.h; \
 	    echo "==> Done"; \
 	fi
 

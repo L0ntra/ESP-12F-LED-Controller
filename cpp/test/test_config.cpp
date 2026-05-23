@@ -1,18 +1,18 @@
-#include "framework.h"
+#include "doctest.h"
 #include "LittleFS.h"
 #include "../include/config.h"
 
-TEST(Config, default_values) {
+TEST_CASE("Config.default_values") {
     Config c;
-    ASSERT_STREQ(c.ssid, "");
-    ASSERT_STREQ(c.password, "");
-    ASSERT_EQ(c.color[0], 255);
-    ASSERT_EQ(c.color[1], 0);
-    ASSERT_EQ(c.color[2], 0);
-    ASSERT_EQ(c.n_leds, 0);
+    CHECK_EQ(c.ssid, "");
+    CHECK_EQ(c.password, "");
+    CHECK_EQ(c.color[0], 255);
+    CHECK_EQ(c.color[1], 0);
+    CHECK_EQ(c.color[2], 0);
+    CHECK_EQ(c.n_leds, 0);
 }
 
-TEST(Config, load_populates_fields) {
+TEST_CASE("Config.load_populates_fields") {
     LittleFS.clear();
     LittleFS.fileContent("/config.json") =
         "{\"ssid\":\"MyWiFi\",\"password\":\"secret123\","
@@ -21,23 +21,23 @@ TEST(Config, load_populates_fields) {
     Config c;
     bool ok = c.load();
 
-    ASSERT_TRUE(ok);
-    ASSERT_STREQ(c.ssid, "MyWiFi");
-    ASSERT_STREQ(c.password, "secret123");
-    ASSERT_EQ(c.color[0], 100);
-    ASSERT_EQ(c.color[1], 150);
-    ASSERT_EQ(c.color[2], 200);
-    ASSERT_EQ(c.n_leds, 60);
+    CHECK(ok);
+    CHECK_EQ(c.ssid, "MyWiFi");
+    CHECK_EQ(c.password, "secret123");
+    CHECK_EQ(c.color[0], 100);
+    CHECK_EQ(c.color[1], 150);
+    CHECK_EQ(c.color[2], 200);
+    CHECK_EQ(c.n_leds, 60);
 }
 
-TEST(Config, load_missing_file_returns_false) {
+TEST_CASE("Config.load_missing_file_returns_false") {
     LittleFS.clear();
     Config c;
     bool ok = c.load();
-    ASSERT_FALSE(ok);
+    CHECK_FALSE(ok);
 }
 
-TEST(Config, save_roundtrip) {
+TEST_CASE("Config.save_roundtrip") {
     LittleFS.clear();
     Config c;
     c.ssid = "HomeNet";
@@ -49,15 +49,15 @@ TEST(Config, save_roundtrip) {
 
     Config c2;
     c2.load();
-    ASSERT_STREQ(c2.ssid, "HomeNet");
-    ASSERT_STREQ(c2.password, "pass123");
-    ASSERT_EQ(c2.color[0], 10);
-    ASSERT_EQ(c2.color[1], 20);
-    ASSERT_EQ(c2.color[2], 30);
-    ASSERT_EQ(c2.n_leds, 144);
+    CHECK_EQ(c2.ssid, "HomeNet");
+    CHECK_EQ(c2.password, "pass123");
+    CHECK_EQ(c2.color[0], 10);
+    CHECK_EQ(c2.color[1], 20);
+    CHECK_EQ(c2.color[2], 30);
+    CHECK_EQ(c2.n_leds, 144);
 }
 
-TEST(Config, save_writes_valid_json) {
+TEST_CASE("Config.save_writes_valid_json") {
     LittleFS.clear();
     Config c;
     c.ssid = "Test";
@@ -68,8 +68,8 @@ TEST(Config, save_writes_valid_json) {
     c.save();
 
     string json = LittleFS.fileContent("/config.json");
-    ASSERT_TRUE(json.find("\"ssid\":\"Test\"") != string::npos);
-    ASSERT_TRUE(json.find("\"password\":\"pw\"") != string::npos);
-    ASSERT_TRUE(json.find("\"color\":[1,2,3]") != string::npos);
-    ASSERT_TRUE(json.find("\"n_leds\":10") != string::npos);
+    CHECK(json.find("\"ssid\":\"Test\"") != string::npos);
+    CHECK(json.find("\"password\":\"pw\"") != string::npos);
+    CHECK(json.find("\"color\":[1,2,3]") != string::npos);
+    CHECK(json.find("\"n_leds\":10") != string::npos);
 }

@@ -1,84 +1,84 @@
-#include "framework.h"
+#include "doctest.h"
 #include "../include/utils.h"
 
-TEST(Utils, rgbToHex_red) {
+TEST_CASE("Utils.rgbToHex_red") {
     auto h = rgbToHex(255, 0, 0);
-    ASSERT_STREQ(h, "#ff0000");
+    CHECK_EQ(h, "#ff0000");
 }
 
-TEST(Utils, rgbToHex_green) {
+TEST_CASE("Utils.rgbToHex_green") {
     auto h = rgbToHex(0, 255, 0);
-    ASSERT_STREQ(h, "#00ff00");
+    CHECK_EQ(h, "#00ff00");
 }
 
-TEST(Utils, rgbToHex_blue) {
+TEST_CASE("Utils.rgbToHex_blue") {
     auto h = rgbToHex(0, 0, 255);
-    ASSERT_STREQ(h, "#0000ff");
+    CHECK_EQ(h, "#0000ff");
 }
 
-TEST(Utils, rgbToHex_white) {
+TEST_CASE("Utils.rgbToHex_white") {
     auto h = rgbToHex(255, 255, 255);
-    ASSERT_STREQ(h, "#ffffff");
+    CHECK_EQ(h, "#ffffff");
 }
 
-TEST(Utils, rgbToHex_black) {
+TEST_CASE("Utils.rgbToHex_black") {
     auto h = rgbToHex(0, 0, 0);
-    ASSERT_STREQ(h, "#000000");
+    CHECK_EQ(h, "#000000");
 }
 
-TEST(Utils, rgbToHex_custom) {
+TEST_CASE("Utils.rgbToHex_custom") {
     auto h = rgbToHex(171, 205, 239);
-    ASSERT_STREQ(h, "#abcdef");
+    CHECK_EQ(h, "#abcdef");
 }
 
-TEST(Utils, hexToRgb_red) {
+TEST_CASE("Utils.hexToRgb_red") {
     int r, g, b;
     hexToRgb("#ff0000", r, g, b);
-    ASSERT_EQ(r, 255);
-    ASSERT_EQ(g, 0);
-    ASSERT_EQ(b, 0);
+    CHECK_EQ(r, 255);
+    CHECK_EQ(g, 0);
+    CHECK_EQ(b, 0);
 }
 
-TEST(Utils, hexToRgb_green) {
+TEST_CASE("Utils.hexToRgb_green") {
     int r, g, b;
     hexToRgb("#00ff00", r, g, b);
-    ASSERT_EQ(r, 0);
-    ASSERT_EQ(g, 255);
-    ASSERT_EQ(b, 0);
+    CHECK_EQ(r, 0);
+    CHECK_EQ(g, 255);
+    CHECK_EQ(b, 0);
 }
 
-TEST(Utils, hexToRgb_blue) {
+TEST_CASE("Utils.hexToRgb_blue") {
     int r, g, b;
     hexToRgb("#0000ff", r, g, b);
-    ASSERT_EQ(r, 0);
-    ASSERT_EQ(g, 0);
-    ASSERT_EQ(b, 255);
+    CHECK_EQ(r, 0);
+    CHECK_EQ(g, 0);
+    CHECK_EQ(b, 255);
 }
 
-TEST(Utils, hexToRgb_no_hash) {
+TEST_CASE("Utils.hexToRgb_no_hash") {
     int r, g, b;
     hexToRgb("ff0000", r, g, b);
-    ASSERT_EQ(r, 255);
-    ASSERT_EQ(g, 0);
-    ASSERT_EQ(b, 0);
+    CHECK_EQ(r, 255);
+    CHECK_EQ(g, 0);
+    CHECK_EQ(b, 0);
 }
 
-TEST(Potentiometer, full_brightness) {
+TEST_CASE("Potentiometer.full_brightness") {
     float pct = readPotentiometer(0);
-    ASSERT_NEAR(pct, 1.0f, 0.01f);
+    CHECK(pct == doctest::Approx(1.0f).epsilon(0.01f));
 }
 
-TEST(Potentiometer, dead_zone) {
+TEST_CASE("Potentiometer.dead_zone") {
     float pct = readPotentiometer(5);
-    ASSERT_NEAR(pct, 1.0f, 0.01f);
+    CHECK(pct == doctest::Approx(1.0f).epsilon(0.01f));
 }
 
-TEST(Potentiometer, mid_point) {
+TEST_CASE("Potentiometer.mid_point") {
     float pct = readPotentiometer(512);
-    ASSERT_NEAR(pct, 0.5f, 0.05f);
+    CHECK(pct == doctest::Approx(0.5f).epsilon(0.05f));
 }
 
-TEST(Potentiometer, zero_brightness) {
+TEST_CASE("Potentiometer.zero_brightness") {
     float pct = readPotentiometer(1023);
-    ASSERT_NEAR(pct, 0.0f, 0.02f);
+    CHECK(pct == doctest::Approx(0.0f).epsilon(0.02f));
 }
