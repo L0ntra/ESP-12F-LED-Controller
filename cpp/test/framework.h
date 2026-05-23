@@ -34,8 +34,7 @@ struct TestRegistrar {
     static TestRegistrar suite##_##name##_reg(                                   \
         #suite "." #name, suite##_##name);                                      \
     static void suite##_##name()
-
-#define STRINGIFY(x) #x
+ 
 #define ASSERT(cond, msg) do {                                                  \
     if (!(cond)) {                                                              \
         throw runtime_error(                                                    \

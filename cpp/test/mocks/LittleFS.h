@@ -1,18 +1,14 @@
 #pragma once
 #include <cstdint>
-#include <cstdio>
 #include <string>
 #include <map>
-#include <sstream>
 #include <cstring>
-#include "Arduino.h"
 using std::string;
 using std::map;
 
 class File {
     friend class LittleFSClass;
     string* storage_ = nullptr;
-    bool write_mode_ = false;
     size_t read_pos_ = 0;
 
 public:
@@ -58,7 +54,6 @@ public:
         if (mode && mode[0] == 'w') {
             files_[path] = "";
             f.storage_ = &files_[path];
-            f.write_mode_ = true;
         } else {
             auto it = files_.find(path);
             if (it != files_.end()) {

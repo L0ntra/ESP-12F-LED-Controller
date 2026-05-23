@@ -1,13 +1,9 @@
 #pragma once
 #include <cstdint>
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <cstdarg>
 #include <string>
 using std::string;
-
-typedef uint8_t byte;
 
 #define INPUT          0x0
 #define OUTPUT         0x1
@@ -68,9 +64,3 @@ public:
 };
 
 extern Serial_ Serial;
-
-#define F(string_literal) (string_literal)
-#define PROGMEM
-#define pgm_read_byte(addr) (*(const unsigned char*)(addr))
-#define pgm_read_word(addr) (*(const unsigned short*)(addr))
-#define pgm_read_dword(addr) (*(const unsigned long*)(addr))

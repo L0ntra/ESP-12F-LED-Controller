@@ -1,5 +1,4 @@
 #include "config.h"
-#include <cstdio>
 #include <memory>
 #include <LittleFS.h>
 #include <ArduinoJson.h>

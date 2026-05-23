@@ -24,8 +24,6 @@ public:
         return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
     }
 
-    uint32_t getFillColor() const { return fill_color_; }
-
 private:
     uint32_t fill_color_ = 0;
 };
