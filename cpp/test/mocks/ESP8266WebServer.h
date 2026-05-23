@@ -30,8 +30,6 @@ public:
     void begin() { started_ = true; }
     void handleClient();
 
-    String uri() const { return current_uri_; }
-    HTTPMethod method() const { return current_method_; }
     String arg(const String& name) const {
         if (name == "plain") return request_body_;
         auto it = args_.find(name.c_str());

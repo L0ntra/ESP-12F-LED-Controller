@@ -31,17 +31,7 @@ void WebServer::handleClient() {
     }
 }
 
-string WebServer::path() const {
-    if (!server_ptr_) return {};
-    return string(server_ptr_->uri().c_str());
-}
-
-string WebServer::method() const {
-    if (!server_ptr_) return {};
-    auto m = server_ptr_->method();
-    return (m == HTTP_GET) ? "GET" : "POST";
-}
-
+// body returns the plain-text request body of the current HTTP request.
 string WebServer::body() const {
     if (!server_ptr_) return {};
     return string(server_ptr_->arg("plain").c_str());

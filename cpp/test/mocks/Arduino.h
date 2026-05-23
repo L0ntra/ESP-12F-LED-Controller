@@ -1,7 +1,5 @@
 #pragma once
 #include <cstdint>
-#include <cstdio>
-#include <cstdarg>
 #include <string>
 using std::string;
 
@@ -30,7 +28,6 @@ inline int digitalRead(uint8_t pin) {
     return (pin < 17) ? mock_pins[pin].value : LOW;
 }
 inline int analogRead(uint8_t) { return mock_analog_value; }
-inline void delay(unsigned long ms) { mock_millis += ms; }
 inline unsigned long millis() { return mock_millis; }
 
 class String {
@@ -46,21 +43,3 @@ public:
     const char* c_str() const { return s_.c_str(); }
     size_t length() const { return s_.size(); }
 };
-
-class Serial_ {
-public:
-    void begin(int) {}
-    void print(const char* s) { if (s) printf("%s", s); }
-    void print(int v) { printf("%d", v); }
-    void println(const char* s) { if (s) printf("%s\n", s); else printf("\n"); }
-    void println(int v) { printf("%d\n", v); }
-    void println() { printf("\n"); }
-    void printf(const char* fmt, ...) __attribute__((format(printf,2,3))) {
-        va_list args;
-        va_start(args, fmt);
-        vprintf(fmt, args);
-        va_end(args);
-    }
-};
-
-extern Serial_ Serial;
