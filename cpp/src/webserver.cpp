@@ -17,7 +17,6 @@ void WebServer::begin() {
 
 // on registers a handler for the given HTTP method and path pair.
 void WebServer::on(const string& method, const string& path, Handler handler) {
-    routes_[{method, path}] = handler;
     HTTPMethod m = (method == "GET") ? HTTP_GET : HTTP_POST;
     server_ptr_->on(
         path.c_str(), m, [handler]() { handler(); });

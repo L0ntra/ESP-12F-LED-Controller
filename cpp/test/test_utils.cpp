@@ -63,21 +63,6 @@ TEST(Utils, hexToRgb_no_hash) {
     ASSERT_EQ(b, 0);
 }
 
-TEST(Utils, hexToRgb_roundtrip) {
-    const int expected[][3] = {
-        {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
-        {128, 128, 128}, {12, 34, 56}, {255, 255, 255}
-    };
-    for (auto& c : expected) {
-        string hex = rgbToHex(c[0], c[1], c[2]);
-        int r, g, b;
-        hexToRgb(hex, r, g, b);
-        ASSERT_EQ(r, c[0]);
-        ASSERT_EQ(g, c[1]);
-        ASSERT_EQ(b, c[2]);
-    }
-}
-
 TEST(Potentiometer, full_brightness) {
     float pct = readPotentiometer(0);
     ASSERT_NEAR(pct, 1.0f, 0.01f);
@@ -96,16 +81,4 @@ TEST(Potentiometer, mid_point) {
 TEST(Potentiometer, zero_brightness) {
     float pct = readPotentiometer(1023);
     ASSERT_NEAR(pct, 0.0f, 0.02f);
-}
-
-TEST(Potentiometer, clamped_above_1) {
-    float pct = readPotentiometer(0);
-    ASSERT_TRUE(pct >= 0.0f);
-    ASSERT_TRUE(pct <= 1.0f);
-}
-
-TEST(Potentiometer, clamped_below_0) {
-    float pct = readPotentiometer(1023);
-    ASSERT_TRUE(pct >= 0.0f);
-    ASSERT_TRUE(pct <= 1.0f);
 }

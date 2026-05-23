@@ -1,11 +1,8 @@
 #pragma once
 #include <string>
 #include <functional>
-#include <map>
 using std::string;
 using std::function;
-using std::map;
-using std::pair;
 
 class ESP8266WebServer;
 
@@ -24,6 +21,5 @@ public:
     void send(int code, const string& content_type, const string& content);
 
 private:
-    map<pair<string, string>, Handler> routes_;
     ESP8266WebServer* server_ptr_ = nullptr;
 };

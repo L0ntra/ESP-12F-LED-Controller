@@ -61,15 +61,6 @@ TEST(WebServer, send_sets_status_code) {
     ASSERT_STREQ(mock.response_body_, "<h1>OK</h1>");
 }
 
-TEST(WebServer, wrapper_WebServer_class) {
-    WebServer ws;
-    bool called = false;
-
-    ws.begin();
-    ws.on("GET", "/hello", [&]() { called = true; });
-    ASSERT_TRUE(true);
-}
-
 TEST(WebServer, on_before_begin_does_not_crash) {
     WebServer ws;
     ws.on("GET", "/route", []() {});
