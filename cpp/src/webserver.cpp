@@ -15,9 +15,7 @@ void WebServer::begin() {
     server_ptr_->begin();
 }
 
-// on registers a handler for the given HTTP method and path pair. The
-// route is stored in both the WebServer route map and the underlying
-// ESP8266WebServer so that handleClient dispatches correctly.
+// on registers a handler for the given HTTP method and path pair.
 void WebServer::on(const string& method, const string& path, Handler handler) {
     routes_[{method, path}] = handler;
     HTTPMethod m = (method == "GET") ? HTTP_GET : HTTP_POST;

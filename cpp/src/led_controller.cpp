@@ -23,8 +23,7 @@ void LEDController::setColor(uint8_t r, uint8_t g, uint8_t b) {
     color_[2] = b;
 }
 
-// setBrightness clamps the value to [0.0, 1.0] and stores it. The
-// brightness is applied in show() as a multiplier on the stored color.
+// setBrightness clamps the value to [0.0, 1.0] and stores it.
 void LEDController::setBrightness(float percent) {
     if (percent < 0.0f) percent = 0.0f;
     if (percent > 1.0f) percent = 1.0f;
@@ -32,7 +31,7 @@ void LEDController::setBrightness(float percent) {
 }
 
 // show writes the brightness-adjusted color to every pixel on the strip.
-// This is a no-op if the strip has not been initialised by begin().
+// This is a no-op if the strip pointer is null.
 void LEDController::show() {
     if (!strip_) return;
     uint32_t c = strip_->Color(
