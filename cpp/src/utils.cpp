@@ -24,14 +24,3 @@ void hexToRgb(const string& hex, int& r, int& g, int& b) {
         b = stoi(h.substr(4, 2), nullptr, 16);
     }
 }
-
-// readPotentiometer converts a raw ADC reading (0-1023 on ESP8266) to a
-// brightness factor in [0.0, 1.0]. The dead zone near the maximum ADC
-// value maps to 0.0 so the LEDs can be fully turned off.
-float readPotentiometer(int raw_adc) {
-    int val = (raw_adc * 65535L) / 1024;
-    float pct = 1.0f - ((val - 319) / 65535.0f);
-    if (pct < 0.0f) pct = 0.0f;
-    if (pct > 1.0f) pct = 1.0f;
-    return pct;
-}
