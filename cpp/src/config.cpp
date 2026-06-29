@@ -25,10 +25,16 @@ bool Config::load() {
 
     ssid = doc["ssid"] | "";
     password = doc["password"] | "";
-    color[0] = doc["color"][0] | 255;
-    color[1] = doc["color"][1] | 0;
-    color[2] = doc["color"][2] | 0;
-    n_leds = doc["n_leds"] | 0;
+    device_name = doc["device_name"] | "esp-led-controller";
+
+    JsonArray strips_arr = doc["strips"].as<JsonArray>();
+    for (size_t i = 0; i < 4 && i < strips_arr.size(); i++) {
+        JsonObject s = strips_arr[i];
+        strips[i].color[0] = s["color"][0] | 255;
+        strips[i].color[1] = s["color"][1] | 0;
+        strips[i].color[2] = s["color"][2] | 0;
+        strips[i].n_leds = s["n_leds"] | 0;
+    }
     return true;
 }
 
@@ -39,11 +45,17 @@ bool Config::save() {
     JsonDocument doc;
     doc["ssid"] = ssid;
     doc["password"] = password;
-    auto col = doc["color"].to<JsonArray>();
-    col.add(color[0]);
-    col.add(color[1]);
-    col.add(color[2]);
-    doc["n_leds"] = n_leds;
+    doc["device_name"] = device_name;
+
+    JsonArray strips_arr = doc["strips"].to<JsonArray>();
+    for (int i = 0; i < 4; i++) {
+        JsonObject s = strips_arr.add<JsonObject>();
+        auto col = s["color"].to<JsonArray>();
+        col.add(strips[i].color[0]);
+        col.add(strips[i].color[1]);
+        col.add(strips[i].color[2]);
+        s["n_leds"] = strips[i].n_leds;
+    }
 
     File f = LittleFS.open(CONFIG_PATH, "w");
     if (!f) return false;

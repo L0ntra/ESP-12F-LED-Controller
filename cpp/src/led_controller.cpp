@@ -9,10 +9,13 @@ LEDController::~LEDController() {
 
 // begin allocates and initialises the NeoPixel strip. Any previously
 // allocated strip is freed first to prevent leaks on re-initialisation.
-void LEDController::begin(uint8_t pin, uint16_t n_leds) {
+// The type parameter accepts a NeoPixel type constant (e.g. NEO_GRB +
+// NEO_KHZ800); a value of 0 uses the default GRB + 800KHz.
+void LEDController::begin(uint8_t pin, uint16_t n_leds, uint16_t type) {
     delete strip_;
     strip_ = nullptr;
-    strip_ = new Adafruit_NeoPixel(n_leds, pin, NEO_GRB + NEO_KHZ800);
+    uint16_t t = (type == 0) ? (NEO_GRB + NEO_KHZ800) : type;
+    strip_ = new Adafruit_NeoPixel(n_leds, pin, t);
     strip_->begin();
     strip_->show();
 }

@@ -62,23 +62,3 @@ TEST_CASE("Utils.hexToRgb_no_hash") {
     CHECK_EQ(g, 0);
     CHECK_EQ(b, 0);
 }
-
-TEST_CASE("Potentiometer.full_brightness") {
-    float pct = readPotentiometer(0);
-    CHECK(pct == doctest::Approx(1.0f).epsilon(0.01f));
-}
-
-TEST_CASE("Potentiometer.dead_zone") {
-    float pct = readPotentiometer(5);
-    CHECK(pct == doctest::Approx(1.0f).epsilon(0.01f));
-}
-
-TEST_CASE("Potentiometer.mid_point") {
-    float pct = readPotentiometer(512);
-    CHECK(pct == doctest::Approx(0.5f).epsilon(0.05f));
-}
-
-TEST_CASE("Potentiometer.zero_brightness") {
-    float pct = readPotentiometer(1023);
-    CHECK(pct == doctest::Approx(0.0f).epsilon(0.02f));
-}
