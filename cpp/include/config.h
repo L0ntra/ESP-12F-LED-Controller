@@ -5,6 +5,7 @@ using std::string;
 struct StripConfig {
     int color[3] = {255, 0, 0};
     int n_leds = 0;
+    int frequency = 800;
 };
 
 struct Config {

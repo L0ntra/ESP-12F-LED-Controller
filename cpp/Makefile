@@ -29,9 +29,10 @@ endif
 # ---------------------------------------------------------------------------
 BUILD_DIR := build
 OBJ_DIR   := $(BUILD_DIR)/obj
+CORE_OBJ_DIR := $(OBJ_DIR)/core
 
 # ---------------------------------------------------------------------------
-# Source files
+# Source files — project
 # ---------------------------------------------------------------------------
 SRC_CXX := \
     src/main.cpp \
@@ -41,6 +42,33 @@ SRC_CXX := \
     src/webserver.cpp
 
 OBJ := $(SRC_CXX:src/%.cpp=$(OBJ_DIR)/%.o)
+
+# ---------------------------------------------------------------------------
+# Source files — ESP8266 Arduino core
+# ---------------------------------------------------------------------------
+CORE_SRC_CXX := $(wildcard $(ARDUINO_CORE_DIR)/*.cpp) \
+                $(wildcard $(ARDUINO_CORE_DIR)/libb64/*.cpp) \
+                $(wildcard $(ARDUINO_CORE_DIR)/umm_malloc/*.cpp)
+CORE_SRC_C   := $(wildcard $(ARDUINO_CORE_DIR)/umm_malloc/*.c)
+CORE_SRC_S   := $(wildcard $(ARDUINO_CORE_DIR)/*.S)
+CORE_OBJ     := $(CORE_SRC_CXX:$(ARDUINO_CORE_DIR)/%.cpp=$(CORE_OBJ_DIR)/%.o) \
+                $(CORE_SRC_C:$(ARDUINO_CORE_DIR)/%.c=$(CORE_OBJ_DIR)/%.o) \
+                $(CORE_SRC_S:$(ARDUINO_CORE_DIR)/%.S=$(CORE_OBJ_DIR)/%.o)
+
+ARDUINO_CORE_A := $(BUILD_DIR)/core.a
+
+# ---------------------------------------------------------------------------
+# Source files — ESP8266 Arduino libraries
+# ---------------------------------------------------------------------------
+LIB_WIFI_SRC    := $(wildcard $(ARDUINO_DIR)/libraries/ESP8266WiFi/src/*.cpp)
+LIB_WEBSERVER_SRC := $(wildcard $(ARDUINO_DIR)/libraries/ESP8266WebServer/src/*.cpp) \
+                     $(wildcard $(ARDUINO_DIR)/libraries/ESP8266WebServer/src/detail/*.cpp)
+LIB_LITTLEFS_SRC := $(wildcard $(ARDUINO_DIR)/libraries/LittleFS/src/*.cpp) \
+                    $(wildcard $(ARDUINO_DIR)/libraries/LittleFS/src/*.c)
+
+LIB_WIFI_A       := $(BUILD_DIR)/ESP8266WiFi.a
+LIB_WEBSERVER_A  := $(BUILD_DIR)/ESP8266WebServer.a
+LIB_LITTLEFS_A   := $(BUILD_DIR)/LittleFS.a
 
 # ---------------------------------------------------------------------------
 # ESP8266 Arduino core object files
@@ -65,7 +93,7 @@ CXXFLAGS := \
     -Wl,-EL -fno-inline-functions -nostdlib -c \
     -mlongcalls -mtext-section-literals -fno-rtti \
     -falign-functions=4 -fdata-sections -ffunction-sections \
-    -D__ets__ -DICACHE_FLASH \
+    -D_GNU_SOURCE -D__ets__ -DICACHE_FLASH \
     -DARDUINO=10819 -DARDUINO_ESP8266_ESP12F \
     -DARDUINO_ARCH_ESP8266 -DESP8266 \
     -DF_CPU=80000000L -DFLASHMODE_DOUT \
@@ -73,12 +101,12 @@ CXXFLAGS := \
     -DTCP_SND_BUF=32768 -DTCP_WND=32768 \
     -DLWIP_FEATURES=1 -DLWIP_IPV6=0 \
     -DDEBUG_ESP_PORT=Serial \
-    -DCORE_MOCK -DUSE_OPTIMIZE_PRINTF \
+    -DUSE_OPTIMIZE_PRINTF \
     -include $(ARDUINO_CORE_DIR)/Arduino.h \
     -I$(ARDUINO_CORE_DIR) \
     -I$(ARDUINO_VARIANT_DIR) \
     -I$(SDK_DIR)/include \
-    -I$(SDK_DIR)/lwip/include \
+    -I$(SDK_DIR)/lwip2/include \
     -I$(ARDUINOJSON_DIR)/src \
     -I$(NEOPIXEL_DIR) \
     $(patsubst %,-I%/src, $(ARDUINO_LIB_DIRS)) \
@@ -89,15 +117,7 @@ LDFLAGS := \
     -Wl,-wrap,system_restart_local -Wl,-wrap,register_chipv6_phy \
     -T$(LD_SCRIPT) \
     -L$(SDK_DIR)/lib \
-    -L$(SDK_DIR)/ld \
-    -Wl,--start-group \
-    $(ARDUINO_CORE_DIR)/core.a \
-    -lcirom -lethernet -llwip -lpp -lphy -lwpa -lmain -lnet80211 -lcrypto -lhal -lgcc \
-    $(ARDUINO_DIR)/libraries/ESP8266WiFi/ESP8266WiFi.a \
-    $(ARDUINO_DIR)/libraries/ESP8266WebServer/ESP8266WebServer.a \
-    $(ARDUINO_DIR)/libraries/LittleFS/LittleFS.a \
-    -Wl,--end-group \
-    -lm
+    -L$(SDK_DIR)/ld
 
 # ---------------------------------------------------------------------------
 # Targets
@@ -113,9 +133,67 @@ $(OBJ_DIR)/%.o: src/%.cpp include/*.h
 	@mkdir -p $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
+# Compile core .cpp -> .o
+$(CORE_OBJ_DIR)/%.o: $(ARDUINO_CORE_DIR)/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+$(CORE_OBJ_DIR)/%.o: $(ARDUINO_CORE_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CXXFLAGS) -o $@ $<
+
+$(CORE_OBJ_DIR)/%.o: $(ARDUINO_CORE_DIR)/%.S
+	@mkdir -p $(dir $@)
+	$(CC) $(CXXFLAGS) -o $@ $<
+
+# Build core.a
+$(ARDUINO_CORE_A): $(CORE_OBJ)
+	$(AR) cru $@ $^
+
+# Compile library source files
+$(OBJ_DIR)/ESP8266WiFi/%.o: $(ARDUINO_DIR)/libraries/ESP8266WiFi/src/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+$(OBJ_DIR)/ESP8266WebServer/%.o: $(ARDUINO_DIR)/libraries/ESP8266WebServer/src/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+$(OBJ_DIR)/ESP8266WebServer/detail/%.o: $(ARDUINO_DIR)/libraries/ESP8266WebServer/src/detail/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+$(OBJ_DIR)/LittleFS/%.o: $(ARDUINO_DIR)/libraries/LittleFS/src/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+$(OBJ_DIR)/LittleFS/%.o: $(ARDUINO_DIR)/libraries/LittleFS/src/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CXXFLAGS) -o $@ $<
+
+WIFI_OBJ      := $(patsubst $(ARDUINO_DIR)/libraries/ESP8266WiFi/src/%.cpp,$(OBJ_DIR)/ESP8266WiFi/%.o,$(LIB_WIFI_SRC))
+WEBSERVER_OBJ := $(patsubst $(ARDUINO_DIR)/libraries/ESP8266WebServer/src/%.cpp,$(OBJ_DIR)/ESP8266WebServer/%.o,$(LIB_WEBSERVER_SRC))
+LITTLEFS_OBJ  := $(patsubst $(ARDUINO_DIR)/libraries/LittleFS/src/%.cpp,$(OBJ_DIR)/LittleFS/%.o,$(LIB_LITTLEFS_SRC)) \
+                 $(patsubst $(ARDUINO_DIR)/libraries/LittleFS/src/%.c,$(OBJ_DIR)/LittleFS/%.o,$(filter %.c,$(LIB_LITTLEFS_SRC)))
+
+$(LIB_WIFI_A): $(WIFI_OBJ)
+	$(AR) cru $@ $^
+
+$(LIB_WEBSERVER_A): $(WEBSERVER_OBJ)
+	$(AR) cru $@ $^
+
+$(LIB_LITTLEFS_A): $(LITTLEFS_OBJ)
+	$(AR) cru $@ $^
+
 # Link
-$(BUILD_DIR)/firmware.elf: $(OBJ)
-	$(CXX) $(LDFLAGS) -o $@ $^
+$(BUILD_DIR)/firmware.elf: $(OBJ) $(ARDUINO_CORE_A) $(LIB_WIFI_A) $(LIB_WEBSERVER_A) $(LIB_LITTLEFS_A)
+	$(CXX) $(LDFLAGS) \
+	    -Wl,--start-group \
+	    $(OBJ) $(ARDUINO_CORE_A) \
+	    -lcirom -lethernet -llwip -lpp -lphy -lwpa -lmain -lnet80211 -lcrypto -lhal -lgcc \
+	    $(LIB_WIFI_A) $(LIB_WEBSERVER_A) $(LIB_LITTLEFS_A) \
+	    -Wl,--end-group \
+	    -lm -o $@
 	$(SIZE) $@
 
 # Convert ELF -> BIN

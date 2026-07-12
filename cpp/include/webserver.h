@@ -1,10 +1,9 @@
 #pragma once
 #include <string>
 #include <functional>
+#include <ESP8266WebServer.h>
 using std::string;
 using std::function;
-
-class ESP8266WebServer;
 
 class WebServer {
 public:

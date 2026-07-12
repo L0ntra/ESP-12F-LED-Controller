@@ -34,6 +34,7 @@ bool Config::load() {
         strips[i].color[1] = s["color"][1] | 0;
         strips[i].color[2] = s["color"][2] | 0;
         strips[i].n_leds = s["n_leds"] | 0;
+        strips[i].frequency = s["frequency"] | 800;
     }
     return true;
 }
@@ -55,6 +56,7 @@ bool Config::save() {
         col.add(strips[i].color[1]);
         col.add(strips[i].color[2]);
         s["n_leds"] = strips[i].n_leds;
+        s["frequency"] = strips[i].frequency;
     }
 
     File f = LittleFS.open(CONFIG_PATH, "w");

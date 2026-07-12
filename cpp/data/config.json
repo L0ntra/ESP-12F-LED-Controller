@@ -1,1 +1,1 @@
-{"ssid": "", "password": "", "device_name": "esp-led-controller", "strips": [{"color": [255, 0, 0], "n_leds": 0}, {"color": [0, 255, 0], "n_leds": 0}, {"color": [0, 0, 255], "n_leds": 0}, {"color": [255, 255, 255], "n_leds": 0}]}
+{"ssid": "Kronos3", "password": "AWarriorsDrink", "device_name": "pc-esp-led-controller", "strips": [{"color": [255, 0, 0], "n_leds": 0, "frequency": 800}, {"color": [0, 255, 0], "n_leds": 0, "frequency": 800}, {"color": [0, 0, 255], "n_leds": 0, "frequency": 800}, {"color": [255, 255, 255], "n_leds": 0, "frequency": 800}]}

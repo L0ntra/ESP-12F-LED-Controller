@@ -20,12 +20,20 @@ static const uint8_t STRIP_PINS[4] = {
     PIN_STRIP_1, PIN_STRIP_2, PIN_STRIP_3, PIN_STRIP_4
 };
 
-// NeoPixel type for all strips (0 = default NEO_GRB + NEO_KHZ800).
-constexpr uint16_t STRIP_TYPE = 0;
-
 static Config config;
 static LEDController strips[4];
 static WebServer server;
+
+// boardPinName returns the WeMos D1 Mini board label for a GPIO number.
+static const char* boardPinName(uint8_t gpio) {
+    switch (gpio) {
+        case 5:  return "D1";
+        case 14: return "D5";
+        case 12: return "D6";
+        case 13: return "D7";
+        default: return "?";
+    }
+}
 
 // updateLEDs writes each strip's staged color to its LEDs.
 static void updateLEDs() {
@@ -35,7 +43,8 @@ static void updateLEDs() {
 }
 
 // handleHome serves the configuration HTML page with device name, 4 colour
-// pickers, and 4 LED-count inputs, all pre-filled from the current config.
+// pickers, 4 LED-count inputs, and GPIO pin labels, all pre-filled from the
+// current config.
 static void handleHome() {
     string html =
         "<!DOCTYPE html>\n"
@@ -57,14 +66,18 @@ static void handleHome() {
             config.strips[i].color[2]);
         char leds_buf[8];
         snprintf(leds_buf, sizeof(leds_buf), "%d", config.strips[i].n_leds);
-        char idx_buf[2];
-        snprintf(idx_buf, sizeof(idx_buf), "%d", i + 1);
         char idx0_buf[2];
         snprintf(idx0_buf, sizeof(idx0_buf), "%d", i);
+        const char* pin_name = boardPinName(STRIP_PINS[i]);
+        int f = config.strips[i].frequency;
         html += "<fieldset>\n"
-                "<legend>Strip " + string(idx_buf) + "</legend>\n"
+                "<legend>" + string(pin_name) + "</legend>\n"
                 "<label>Color: <input type=\"color\" id=\"color" + string(idx0_buf) + "\" value=\"" + hex + "\"></label><br>\n"
-                "<label>LEDs: <input type=\"number\" id=\"leds" + string(idx0_buf) + "\" value=\"" + leds_buf + "\" min=\"0\"></label>\n"
+                "<label>LEDs: <input type=\"number\" id=\"leds" + string(idx0_buf) + "\" value=\"" + leds_buf + "\" min=\"0\"></label><br>\n"
+                "<label>Type: <select id=\"freq" + string(idx0_buf) + "\">\n"
+                "<option value=\"800\"" + (f == 800 ? " selected" : "") + ">WS2812B</option>\n"
+                "<option value=\"400\"" + (f == 400 ? " selected" : "") + ">WS2811</option>\n"
+                "</select></label>\n"
                 "</fieldset>\n";
     }
 
@@ -77,7 +90,8 @@ static void handleHome() {
         "    for (let i = 0; i < 4; i++) {\n"
         "        strips.push({\n"
         "            color: document.getElementById('color' + i).value,\n"
-        "            n_leds: parseInt(document.getElementById('leds' + i).value) || 0\n"
+        "            n_leds: parseInt(document.getElementById('leds' + i).value) || 0,\n"
+        "            frequency: parseInt(document.getElementById('freq' + i).value) || 800\n"
         "        });\n"
         "    }\n"
         "    const body = JSON.stringify({\n"
@@ -128,6 +142,7 @@ static void handleConfigure() {
                      config.strips[i].color[1],
                      config.strips[i].color[2]);
             config.strips[i].n_leds = s["n_leds"] | 0;
+            config.strips[i].frequency = s["frequency"] | 800;
         }
     }
 
@@ -135,7 +150,7 @@ static void handleConfigure() {
 
     // Re-initialise strips so LED-count changes take effect.
     for (int i = 0; i < 4; i++) {
-        strips[i].begin(STRIP_PINS[i], config.strips[i].n_leds, STRIP_TYPE);
+        strips[i].begin(STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency);
         strips[i].setColor(
             config.strips[i].color[0],
             config.strips[i].color[1],
@@ -160,7 +175,7 @@ void setup() {
     }
 
     for (int i = 0; i < 4; i++) {
-        strips[i].begin(STRIP_PINS[i], config.strips[i].n_leds, STRIP_TYPE);
+        strips[i].begin(STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency);
         strips[i].setColor(
             config.strips[i].color[0],
             config.strips[i].color[1],

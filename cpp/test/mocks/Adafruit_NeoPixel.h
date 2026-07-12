@@ -3,6 +3,7 @@
 
 #define NEO_GRB     0
 #define NEO_KHZ800  0
+#define NEO_KHZ400  0x0100
 
 class Adafruit_NeoPixel {
 public:

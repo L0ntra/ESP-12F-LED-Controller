@@ -4,9 +4,8 @@ C++-specific conventions and constraints for this project.
 
 ## Build System
 
-- **No PlatformIO.** The only build system is a manual Makefile compiling with
-  the xtensa-lx106-elf toolchain. Host-based unit/integration tests also use a
-  separate Makefile targeting the host g++.
+- **PlatformIO** is the build system for firmware. Host-based unit/integration
+  tests use a separate Makefile targeting the host g++.
 - **No native/host application binary.** The firmware target is exclusively the
   ESP-12F (ESP8266). Testing is done purely through unit and integration tests
   on the host.

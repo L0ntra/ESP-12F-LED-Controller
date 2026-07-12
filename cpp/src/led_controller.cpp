@@ -9,13 +9,12 @@ LEDController::~LEDController() {
 
 // begin allocates and initialises the NeoPixel strip. Any previously
 // allocated strip is freed first to prevent leaks on re-initialisation.
-// The type parameter accepts a NeoPixel type constant (e.g. NEO_GRB +
-// NEO_KHZ800); a value of 0 uses the default GRB + 800KHz.
-void LEDController::begin(uint8_t pin, uint16_t n_leds, uint16_t type) {
+// frequency is 400 for WS2811 or 800 for WS2812B.
+void LEDController::begin(uint8_t pin, uint16_t n_leds, int frequency) {
     delete strip_;
     strip_ = nullptr;
-    uint16_t t = (type == 0) ? (NEO_GRB + NEO_KHZ800) : type;
-    strip_ = new Adafruit_NeoPixel(n_leds, pin, t);
+    uint16_t type = NEO_GRB | (frequency == 400 ? NEO_KHZ400 : NEO_KHZ800);
+    strip_ = new Adafruit_NeoPixel(n_leds, pin, type);
     strip_->begin();
     strip_->show();
 }

@@ -12,6 +12,7 @@ TEST_CASE("Config.default_values") {
         CHECK_EQ(c.strips[i].color[1], 0);
         CHECK_EQ(c.strips[i].color[2], 0);
         CHECK_EQ(c.strips[i].n_leds, 0);
+        CHECK_EQ(c.strips[i].frequency, 800);
     }
 }
 
@@ -21,10 +22,10 @@ TEST_CASE("Config.load_populates_fields") {
         "{\"ssid\":\"MyWiFi\",\"password\":\"secret123\","
         "\"device_name\":\"my-controller\","
         "\"strips\":["
-        "{\"color\":[100,150,200],\"n_leds\":60},"
-        "{\"color\":[10,20,30],\"n_leds\":30},"
+        "{\"color\":[100,150,200],\"n_leds\":60,\"frequency\":400},"
+        "{\"color\":[10,20,30],\"n_leds\":30,\"frequency\":800},"
         "{\"color\":[200,100,50],\"n_leds\":144},"
-        "{\"color\":[0,255,128],\"n_leds\":10}"
+        "{\"color\":[0,255,128],\"n_leds\":10,\"frequency\":400}"
         "]}";
 
     Config c;
@@ -39,21 +40,25 @@ TEST_CASE("Config.load_populates_fields") {
     CHECK_EQ(c.strips[0].color[1], 150);
     CHECK_EQ(c.strips[0].color[2], 200);
     CHECK_EQ(c.strips[0].n_leds, 60);
+    CHECK_EQ(c.strips[0].frequency, 400);
 
     CHECK_EQ(c.strips[1].color[0], 10);
     CHECK_EQ(c.strips[1].color[1], 20);
     CHECK_EQ(c.strips[1].color[2], 30);
     CHECK_EQ(c.strips[1].n_leds, 30);
+    CHECK_EQ(c.strips[1].frequency, 800);
 
     CHECK_EQ(c.strips[2].color[0], 200);
     CHECK_EQ(c.strips[2].color[1], 100);
     CHECK_EQ(c.strips[2].color[2], 50);
     CHECK_EQ(c.strips[2].n_leds, 144);
+    CHECK_EQ(c.strips[2].frequency, 800);
 
     CHECK_EQ(c.strips[3].color[0], 0);
     CHECK_EQ(c.strips[3].color[1], 255);
     CHECK_EQ(c.strips[3].color[2], 128);
     CHECK_EQ(c.strips[3].n_leds, 10);
+    CHECK_EQ(c.strips[3].frequency, 400);
 }
 
 TEST_CASE("Config.load_missing_file_returns_false") {
@@ -73,15 +78,18 @@ TEST_CASE("Config.save_roundtrip") {
 
     c.strips[0].color[0] = 10; c.strips[0].color[1] = 20; c.strips[0].color[2] = 30;
     c.strips[0].n_leds = 144;
+    c.strips[0].frequency = 400;
 
     c.strips[1].color[0] = 50; c.strips[1].color[1] = 60; c.strips[1].color[2] = 70;
     c.strips[1].n_leds = 60;
+    c.strips[1].frequency = 800;
 
     c.strips[2].color[0] = 80; c.strips[2].color[1] = 90; c.strips[2].color[2] = 100;
     c.strips[2].n_leds = 30;
 
     c.strips[3].color[0] = 110; c.strips[3].color[1] = 120; c.strips[3].color[2] = 130;
     c.strips[3].n_leds = 10;
+    c.strips[3].frequency = 400;
 
     c.save();
 
@@ -96,6 +104,7 @@ TEST_CASE("Config.save_roundtrip") {
         CHECK_EQ(c2.strips[i].color[1], c.strips[i].color[1]);
         CHECK_EQ(c2.strips[i].color[2], c.strips[i].color[2]);
         CHECK_EQ(c2.strips[i].n_leds, c.strips[i].n_leds);
+        CHECK_EQ(c2.strips[i].frequency, c.strips[i].frequency);
     }
 }
 
@@ -108,6 +117,7 @@ TEST_CASE("Config.save_writes_valid_json") {
 
     c.strips[0].color[0] = 1; c.strips[0].color[1] = 2; c.strips[0].color[2] = 3;
     c.strips[0].n_leds = 10;
+    c.strips[0].frequency = 400;
 
     c.save();
 
@@ -117,4 +127,5 @@ TEST_CASE("Config.save_writes_valid_json") {
     CHECK(json.find("\"device_name\":\"test-device\"") != string::npos);
     CHECK(json.find("\"color\":[1,2,3]") != string::npos);
     CHECK(json.find("\"n_leds\":10") != string::npos);
+    CHECK(json.find("\"frequency\":400") != string::npos);
 }

@@ -8,7 +8,7 @@ public:
     LEDController();
     ~LEDController();
 
-    void begin(uint8_t pin, uint16_t n_leds, uint16_t type = 0);
+    void begin(uint8_t pin, uint16_t n_leds, int frequency = 800);
     void setColor(uint8_t r, uint8_t g, uint8_t b);
     void show();
 
