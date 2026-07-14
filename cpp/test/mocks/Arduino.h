@@ -29,6 +29,7 @@ inline int digitalRead(uint8_t pin) {
 }
 inline int analogRead(uint8_t) { return mock_analog_value; }
 inline unsigned long millis() { return mock_millis; }
+inline void delayMicroseconds(unsigned int) {}
 
 class String {
     string s_;

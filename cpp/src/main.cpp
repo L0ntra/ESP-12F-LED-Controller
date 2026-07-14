@@ -133,6 +133,14 @@ static void handleConfigure() {
     }
 
     JsonArray strips_arr = doc["strips"].as<JsonArray>();
+
+    int old_n_leds[4];
+    int old_freq[4];
+    for (int i = 0; i < 4; i++) {
+        old_n_leds[i] = config.strips[i].n_leds;
+        old_freq[i] = config.strips[i].frequency;
+    }
+
     if (strips_arr.size() == 4) {
         for (size_t i = 0; i < 4; i++) {
             JsonObject s = strips_arr[i];
@@ -148,16 +156,19 @@ static void handleConfigure() {
 
     config.save();
 
-    // Re-initialise strips so LED-count changes take effect.
     for (int i = 0; i < 4; i++) {
         Serial.printf("[save] Strip %d: pin=%d n_leds=%d freq=%d color=[%d,%d,%d]\n",
             i, STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency,
             config.strips[i].color[0], config.strips[i].color[1], config.strips[i].color[2]);
-        strips[i].begin(STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency);
+        if (config.strips[i].n_leds != old_n_leds[i] ||
+            config.strips[i].frequency != old_freq[i]) {
+            strips[i].begin(STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency);
+        }
         strips[i].setColor(
             config.strips[i].color[0],
             config.strips[i].color[1],
             config.strips[i].color[2]);
+        strips[i].show();
     }
 
     server.send(200, "text/plain", "OK");
