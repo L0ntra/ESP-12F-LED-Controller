@@ -150,6 +150,9 @@ static void handleConfigure() {
 
     // Re-initialise strips so LED-count changes take effect.
     for (int i = 0; i < 4; i++) {
+        Serial.printf("[save] Strip %d: pin=%d n_leds=%d freq=%d color=[%d,%d,%d]\n",
+            i, STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency,
+            config.strips[i].color[0], config.strips[i].color[1], config.strips[i].color[2]);
         strips[i].begin(STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency);
         strips[i].setColor(
             config.strips[i].color[0],
@@ -163,18 +166,25 @@ static void handleConfigure() {
 // setup initialises the filesystem, loads persisted config, creates the LED
 // strips, initiates an async WiFi connection, and registers HTTP routes.
 void setup() {
+    Serial.begin(115200);
+    Serial.println("\n[boot] ESP-12F LED Controller starting...");
+
     if (!LittleFS.begin()) {
-        // LittleFS mount failed — will use defaults
+        Serial.println("[boot] LittleFS mount failed — using defaults");
     }
 
     pinMode(PIN_LED_BUILTIN, OUTPUT);
     digitalWrite(PIN_LED_BUILTIN, HIGH);
 
     if (!config.load()) {
-        // Config load failed — using defaults
+        Serial.println("[boot] Config load failed — using defaults");
     }
 
+    Serial.printf("[boot] Device: %s\n", config.device_name.c_str());
     for (int i = 0; i < 4; i++) {
+        Serial.printf("[boot] Strip %d: pin=%d n_leds=%d freq=%d color=[%d,%d,%d]\n",
+            i, STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency,
+            config.strips[i].color[0], config.strips[i].color[1], config.strips[i].color[2]);
         strips[i].begin(STRIP_PINS[i], config.strips[i].n_leds, config.strips[i].frequency);
         strips[i].setColor(
             config.strips[i].color[0],
@@ -189,13 +199,20 @@ void setup() {
     server.on("GET", "/", handleHome);
     server.on("POST", "/configure", handleConfigure);
     server.begin();
+
+    Serial.printf("[boot] WiFi connecting to %s...\n", config.ssid.c_str());
 }
 
 unsigned long last_led_update = 0;
+static bool wifi_printed = false;
 
 // loop processes HTTP requests and drives the LED strips at 100 Hz.
 void loop() {
     server.handleClient();
+    if (!wifi_printed && WiFi.status() == WL_CONNECTED) {
+        Serial.printf("[wifi] Connected — IP: %s\n", WiFi.localIP().toString().c_str());
+        wifi_printed = true;
+    }
     unsigned long now = millis();
     if (now - last_led_update >= 100) {
         last_led_update = now;

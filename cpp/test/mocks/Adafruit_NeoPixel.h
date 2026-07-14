@@ -2,6 +2,7 @@
 #include <cstdint>
 
 #define NEO_GRB     0
+#define NEO_RGB     0
 #define NEO_KHZ800  0
 #define NEO_KHZ400  0x0100
 
